@@ -1,0 +1,6 @@
+flask
+ccxt
+ta
+pandas
+numpy
+gunicorn

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto RSI Dashboard - Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1,
+        h2 {
+            color: #5FD0F3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #5FD0F3;
+            color: white;
+        }
+
+        .highlight {
+            color: #5FD0F3;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Crypto RSI Dashboard - Summary</h1>
+    <p>This dashboard provides a comprehensive overview of cryptocurrency trends using RSI (Relative Strength Index) and other indicators. Below is a detailed explanation of the logic and setup for each column in the dashboard.</p>
+
+    <h2>Dashboard Logic</h2>
+    <ul>
+        <li><strong>Data Sources:</strong> The dashboard fetches data from multiple exchanges using the <span class="highlight">ccxt</span> library (e.g., Binance, KuCoin, Gate.io).</li>
+        <li><strong>Indicators:</strong> The dashboard calculates RSI, EMA (Exponential Moving Average), and SMA (Simple Moving Average) for different timeframes.</li>
+        <li><strong>Fear and Greed Index:</strong> The dashboard integrates the Fear and Greed Index to provide additional market sentiment insights.</li>
+        <li><strong>Parallel Processing:</strong> Coins are processed in parallel using a thread pool for faster data retrieval.</li>
+    </ul>
+
+    <h2>Columns in the Dashboard</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Column Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Coin</strong></td>
+                <td>
+                    The name of the cryptocurrency. Clicking on the coin name opens a <span class="highlight">TradingView</span> chart in a modal window with preloaded indicators (e.g., RSI, Supertrend).
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Current Price</strong></td>
+                <td>
+                    The latest price of the cryptocurrency, fetched from the respective exchange.
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Spot Macro Trend</strong></td>
+                <td>
+                    Indicates the overall market trend based on EMA (21-week) and SMA (300-day, 400-day):
+                    <ul>
+                        <li><span class="highlight">Bullish:</span> EMA > SMA400 and Price > EMA</li>
+                        <li><span class="highlight">Bearish:</span> EMA < SMA300 and Price < SMA400</li>
+                        <li><span class="highlight">Neutral:</span> Other conditions</li>
+                        <li><span class="highlight">Waiting:</span> Insufficient data</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Spot Macro RSI (1w)</strong></td>
+                <td>
+                    The RSI value for the 1-week timeframe. This helps identify overbought or oversold conditions:
+                    <ul>
+                        <li><span class="highlight">RSI > 70:</span> Overbought</li>
+                        <li><span class="highlight">RSI < 30:</span> Oversold</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Swing Macro RSI (1d)</strong></td>
+                <td>
+                    The RSI value for the 1-day timeframe, used for swing trading analysis.
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Micro RSI (4h)</strong></td>
+                <td>
+                    The RSI value for the 4-hour timeframe, used for short-term trading decisions.
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Spot Entry</strong></td>
+                <td>
+                    Suggests whether to <span class="highlight">Buy</span> or <span class="highlight">Wait</span> based on:
+                    <ul>
+                        <li><span class="highlight">Buy:</span> RSI < 35, Bearish trend, and Fear and Greed Index < 50</li>
+                        <li><span class="highlight">Wait:</span> Otherwise</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Position Status</strong></td>
+                <td>
+                    Provides guidance on managing positions:
+                    <ul>
+                        <li><span class="highlight">Hold:</span> Bullish trend and RSI < 70</li>
+                        <li><span class="highlight">Reduce/Exit:</span> Bullish trend, RSI >= 70, and Fear and Greed Index > 50</li>
+                        <li><span class="highlight">DCA:</span> RSI <= 35 and Fear and Greed Index < 40</li>
+                        <li><span class="highlight">Wait:</span> Otherwise</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Additional Features</h2>
+    <ul>
+        <li><strong>TradingView Integration:</strong> Clicking on a coin name opens a TradingView chart with preloaded indicators (RSI, Supertrend).</li>
+        <li><strong>Sorting:</strong> Columns can be sorted by clicking on the headers (e.g., numeric or alphabetical sorting).</li>
+        <li><strong>Responsive Design:</strong> The dashboard is styled using Bootstrap for a modern and responsive layout.</li>
+    </ul>
+
+    <h2>Technical Setup</h2>
+    <ul>
+        <li><strong>Backend:</strong> Flask is used as the web framework.</li>
+        <li><strong>Data Fetching:</strong> The <span class="highlight">ccxt</span> library is used to fetch market data from multiple exchanges.</li>
+        <li><strong>Indicators:</strong> RSI and moving averages are calculated using the <span class="highlight">pandas</span> and <span class="highlight">ta</span> libraries.</li>
+        <li><strong>Frontend:</strong> The dashboard is rendered using Jinja2 templates and styled with Bootstrap.</li>
+        <li><strong>Deployment:</strong> The app is deployed on Railway, with the Flask server configured to bind to <span class="highlight">0.0.0.0</span> and use the <span class="highlight">PORT</span> environment variable.</li>
+    </ul>
+</body>
+
+</html>
